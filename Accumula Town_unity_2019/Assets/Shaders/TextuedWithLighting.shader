@@ -28,6 +28,7 @@ Shader "Vivify/Textured With Lighting"
             #pragma fragment frag
             #pragma multi_compile_fwdbase
             #pragma multi_compile_fog
+            #pragma multi_compile_instancing
             
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
@@ -51,6 +52,7 @@ Shader "Vivify/Textured With Lighting"
                 SHADOW_COORDS(2)
                 UNITY_FOG_COORDS(3)
 
+                UNITY_VERTEX_INPUT_INSTANCE_ID
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -69,6 +71,7 @@ Shader "Vivify/Textured With Lighting"
 
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_OUTPUT(v2f, o);
+                UNITY_TRANSFER_INSTANCE_ID(v, o);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
                 
                 o.pos = UnityObjectToClipPos(v.vertex);
@@ -85,6 +88,9 @@ Shader "Vivify/Textured With Lighting"
             
             fixed4 frag (v2f i) : SV_Target
             {
+                UNITY_SETUP_INSTANCE_ID(i);
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+
                 float3 normal = normalize(i.normal);
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
 
@@ -125,6 +131,7 @@ Shader "Vivify/Textured With Lighting"
             #pragma fragment frag
             #pragma target 2.0
             #pragma multi_compile_shadowcaster
+            #pragma multi_compile_instancing
             #include "UnityCG.cginc"
 
             struct v2f
@@ -144,6 +151,7 @@ Shader "Vivify/Textured With Lighting"
 
             float4 frag(v2f i) : SV_Target
             {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
                 SHADOW_CASTER_FRAGMENT(i);
             }
             ENDCG

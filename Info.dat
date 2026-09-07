@@ -12,10 +12,10 @@
   "_previewDuration" : 10,
   "_songFilename" : "song.ogg",
   "_coverImageFilename" : "cover.png",
-  "_environmentName" : "DefaultEnvironment",
+  "_environmentName" : "BillieEnvironment",
   "_allDirectionsEnvironmentName" : "GlassDesertEnvironment",
   "_environmentNames" : [
-    "DefaultEnvironment"
+    "BillieEnvironment"
   ],
   "_colorSchemes" : [
   ],

@@ -30,10 +30,21 @@ Shader "BeatSaber/Lit Glow Cutout Dithered"
             #pragma fragment frag
             #pragma multi_compile_fwdbase
             #pragma multi_compile_fog
+            #pragma multi_compile_instancing
             
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
             #include "Lighting.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 texcoord : TEXCOORD0;
+                float3 normal : NORMAL;
+                half4 color : COLOR;
+
+                UNITY_VERTEX_INPUT_INSTANCE_ID
+            };
 
             struct v2f
             {
@@ -46,6 +57,7 @@ Shader "BeatSaber/Lit Glow Cutout Dithered"
                 SHADOW_COORDS(4)
                 UNITY_FOG_COORDS(5)
 
+                UNITY_VERTEX_INPUT_INSTANCE_ID
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -63,7 +75,7 @@ Shader "BeatSaber/Lit Glow Cutout Dithered"
             // 4x4 Bayer Matrix screen-door dithering function
             void ApplyDither(float4 scrPos, float fadeAlpha)
             {
-                // Screen pixel coordinates
+                // Screen pixel coordinates adjusted for VR viewport dimensions
                 float2 screenPos = (scrPos.xy / scrPos.w) * _ScreenParams.xy;
                 int2 ditherCoord = int2(fmod(screenPos.x, 4.0), fmod(screenPos.y, 4.0));
 
@@ -81,12 +93,13 @@ Shader "BeatSaber/Lit Glow Cutout Dithered"
                 }
             }
             
-            v2f vert (appdata_full v)
+            v2f vert (appdata v)
             {
                 v2f o;
 
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_OUTPUT(v2f, o);
+                UNITY_TRANSFER_INSTANCE_ID(v, o);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
                 
                 o.pos = UnityObjectToClipPos(v.vertex);
@@ -104,6 +117,9 @@ Shader "BeatSaber/Lit Glow Cutout Dithered"
             
             fixed4 frag (v2f i) : SV_Target
             {
+                UNITY_SETUP_INSTANCE_ID(i);
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+
                 fixed4 baseColor = lerp(_ColorNight, _Color, _DayNightCycle);
                 fixed4 tex = tex2D(_Tex, i.uv);
                 fixed4 col = baseColor * tex;
@@ -150,7 +166,18 @@ Shader "BeatSaber/Lit Glow Cutout Dithered"
             #pragma fragment frag
             #pragma target 2.0
             #pragma multi_compile_shadowcaster
+            #pragma multi_compile_instancing
             #include "UnityCG.cginc"
+
+            struct appdata_caster
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float2 texcoord : TEXCOORD0;
+                half4 color : COLOR;
+
+                UNITY_VERTEX_INPUT_INSTANCE_ID
+            };
 
             struct v2f
             {
@@ -158,6 +185,8 @@ Shader "BeatSaber/Lit Glow Cutout Dithered"
                 float2 uv : TEXCOORD1;
                 float4 scrPos : TEXCOORD2;
                 half4 color : COLOR;
+
+                UNITY_VERTEX_INPUT_INSTANCE_ID
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -185,11 +214,14 @@ Shader "BeatSaber/Lit Glow Cutout Dithered"
                 if (fadeAlpha < dither[index]) discard;
             }
 
-            v2f vert(appdata_full v)
+            v2f vert(appdata_caster v)
             {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
+                UNITY_INITIALIZE_OUTPUT(v2f, o);
+                UNITY_TRANSFER_INSTANCE_ID(v, o);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+
                 o.uv = TRANSFORM_TEX(v.texcoord, _Tex);
                 o.color = v.color;
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(o);
@@ -199,6 +231,9 @@ Shader "BeatSaber/Lit Glow Cutout Dithered"
 
             float4 frag(v2f i) : SV_Target
             {
+                UNITY_SETUP_INSTANCE_ID(i);
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+
                 fixed4 baseColor = lerp(_ColorNight, _Color, _DayNightCycle);
                 fixed4 tex = tex2D(_Tex, i.uv);
                 fixed4 col = baseColor * tex;
