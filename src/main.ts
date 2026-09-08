@@ -1,5 +1,6 @@
 import * as rm from "https://deno.land/x/remapper@4.2.3/src/mod.ts"
 import * as bundleInfo from '../bundleinfo.json' with { type: 'json' }
+import { SetMaterialProperty } from "https://deno.land/x/remapper@4.2.3/src/internals/mod.ts";
 
 const pipeline = await rm.createPipeline({ bundleInfo })
 
@@ -201,6 +202,7 @@ async function doMap(file: rm.DIFFICULTY_NAME, chromaOnly: boolean = false) {
         },
         beat: 0
     })
+    
 
     /// ---- { EVENTS } -----
     prefabs.accumulatown.instantiate(map, 0);
