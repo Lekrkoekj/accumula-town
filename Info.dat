@@ -30,7 +30,20 @@
           "_noteJumpMovementSpeed" : 17,
           "_noteJumpStartBeatOffset" : 0.25,
           "_beatmapColorSchemeIdx" : 0,
-          "_environmentNameIdx" : 0
+          "_environmentNameIdx" : 0,
+          "_customData" : {
+            "_suggestions" : [
+              "Chroma"
+            ],
+            "_requirements" : [
+              "Vivify"
+            ],
+            "_colorLeft" : {"r":1,"g":0,"b":0},
+            "_colorRight" : {"r":0,"g":0.573,"b":1},
+            "_envColorLeft" : {"r":1,"g":0,"b":0},
+            "_envColorRight" : {"r":0,"g":0.573,"b":1},
+            "_envColorRightBoost" : {"r":0.234,"g":0.663,"b":0.883}
+          }
         }
       ]
     }
