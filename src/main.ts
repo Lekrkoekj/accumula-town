@@ -198,10 +198,7 @@ async function doMap(file: rm.DIFFICULTY_NAME, chromaOnly: boolean = false) {
             shadowResolution: rm.SHADOW_RESOLUTION.High,
             softParticles: rm.BOOLEAN.True,
         },
-        renderSettings: {
-            fog: rm.BOOLEAN.True,
-            fogEndDistance: 64,
-        },
+        beat: 0
     })
 
     /// ---- { EVENTS } -----
@@ -212,6 +209,11 @@ async function doMap(file: rm.DIFFICULTY_NAME, chromaOnly: boolean = false) {
     prefabs.woman.instantiate(map, 0);
     prefabs.oldman.instantiate(map, 0);
     prefabs.oldwoman.instantiate(map, 0);
+    prefabs.furret.instantiate(map, 0);
+    prefabs.furretwalk.instantiate(map, 0);
+    prefabs.playermale.instantiate(map, 0);
+    prefabs.playerfemale.instantiate(map, 0);
+
     setLaserPositions("left");
     setLaserPositions("right");
 }

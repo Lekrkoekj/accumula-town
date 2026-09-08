@@ -61,19 +61,31 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
+    - _ColorBands: 5
     - _Cutoff: 0.5
+    - _CutoffThreshold: 0.1
     - _DetailNormalMapScale: 1
+    - _DitherStrength: 0
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MaskStrength: 3.94
+    - _GridResolution: 15.57
+    - _HeightNoiseOffsetScale: 1
+    - _HeightSpeedDamping: 0.05
+    - _MaskPixelResolution: 32
+    - _MaskStrength: 2.14
     - _Metallic: 0
     - _Mode: 0
-    - _MovementSpeed: 2
+    - _MovementSpeed: 1
     - _OcclusionStrength: 1
     - _Opacity: 1
     - _Parallax: 0.02
+    - _PixelDensity: 3.6
+    - _PixelSize: 0.23
+    - _PixelWorldSize: 0.25
+    - _PixelateMask: 1
+    - _PosterizeSteps: 4
     - _ShadowCutoff: 0.2
     - _ShadowDensity: 1
     - _ShadowDitherStrength: 0.014
@@ -83,8 +95,9 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Strength: 2.15
-    - _TextureSize: 0.1
+    - _Steps: 5
+    - _Strength: 1.6
+    - _TextureSize: 0.04
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:

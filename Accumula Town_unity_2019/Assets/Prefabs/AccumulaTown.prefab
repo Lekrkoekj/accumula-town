@@ -2245,6 +2245,7 @@ GameObject:
   - component: {fileID: 1306776060825254660}
   - component: {fileID: 6269193736799154861}
   - component: {fileID: 3044991809661055659}
+  - component: {fileID: 2004970043219356527}
   m_Layer: 0
   m_Name: DarkTile
   m_TagString: Untagged
@@ -2313,6 +2314,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &2004970043219356527
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6185213065653127420}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8713955413016161805, guid: 79ba4674cf3276e4099343631b625ff8, type: 3}
 --- !u!1 &6280917230357827606
 GameObject:
   m_ObjectHideFlags: 0
@@ -2679,7 +2694,7 @@ Light:
   m_CookieSize: 10
   m_Shadows:
     m_Type: 1
-    m_Resolution: -1
+    m_Resolution: 2
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.05

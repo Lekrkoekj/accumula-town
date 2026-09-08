@@ -24,8 +24,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6245554036119813917}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.93, y: 0.699, z: 11.1}
+  m_LocalRotation: {x: -0, y: 0.2064313, z: -0, w: 0.97846115}
+  m_LocalPosition: {x: 5.085, y: 1.429, z: 4.245}
   m_LocalScale: {x: 1.4816, y: 1.4816, z: 1.4816}
   m_Children:
   - {fileID: 6245554036824372200}
@@ -65,7 +65,6 @@ GameObject:
   - component: {fileID: 6245554036563381488}
   - component: {fileID: 6245554036563381503}
   - component: {fileID: 6245554036563381502}
-  - component: {fileID: 6245554036563381489}
   m_Layer: 0
   m_Name: Woman4
   m_TagString: Untagged
@@ -134,20 +133,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &6245554036563381489
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6245554036563381491}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &6245554036726601631
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,7 +144,6 @@ GameObject:
   - component: {fileID: 6245554036726601628}
   - component: {fileID: 6245554036726601627}
   - component: {fileID: 6245554036726601626}
-  - component: {fileID: 6245554036726601629}
   m_Layer: 0
   m_Name: Woman3
   m_TagString: Untagged
@@ -228,20 +212,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &6245554036726601629
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6245554036726601631}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &6245554036824372203
 GameObject:
   m_ObjectHideFlags: 0
@@ -253,7 +223,6 @@ GameObject:
   - component: {fileID: 6245554036824372200}
   - component: {fileID: 6245554036824372215}
   - component: {fileID: 6245554036824372214}
-  - component: {fileID: 6245554036824372201}
   m_Layer: 0
   m_Name: Woman1
   m_TagString: Untagged
@@ -322,20 +291,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &6245554036824372201
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6245554036824372203}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &6245554036855863512
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,7 +302,6 @@ GameObject:
   - component: {fileID: 6245554036855863513}
   - component: {fileID: 6245554036855863524}
   - component: {fileID: 6245554036855863527}
-  - component: {fileID: 6245554036855863526}
   m_Layer: 0
   m_Name: Woman2
   m_TagString: Untagged
@@ -416,17 +370,3 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &6245554036855863526
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6245554036855863512}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}

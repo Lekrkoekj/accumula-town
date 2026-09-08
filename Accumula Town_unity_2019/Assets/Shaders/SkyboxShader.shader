@@ -11,14 +11,16 @@
         _Bloom ("Bloom", Range(0, 1)) = 1
         _DayNightCycle("Day/Night Cycle", Range(0, 1)) = 1
 
-        _NormalMap ("Normal Map", 2D) = "bump" {} // 🆕 normal map property
-        _NormalStrength ("Normal Strength", Range(0, 1)) = 0.5 // 🆕 normal intensity
+        _ColorBandingSteps ("Color Banding Steps", Range(2, 64)) = 32
+
+        _NormalMap ("Normal Map", 2D) = "bump" {}
+        _NormalStrength ("Normal Strength", Range(0, 1)) = 0.5
     }
 
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        Cull Front // Render only the back faces
+        Cull Front
 
         Pass
         {
@@ -51,6 +53,7 @@
             float _HorizonHeight;
             float _Bloom;
             float _DayNightCycle;
+            float _ColorBandingSteps;
 
             sampler2D _NormalMap;
             float _NormalStrength;
@@ -73,14 +76,12 @@
                 float3 up = float3(0, 1, 0);
                 float3 forward = normalize(i.localPosition);
 
-                // --- NORMAL MAP (tangent-space style perturbation) ---
+                // --- NORMAL MAP ---
                 float3 normalTex = UnpackNormal(tex2D(_NormalMap, i.uv));
                 normalTex = normalize(lerp(float3(0, 0, 1), normalTex, _NormalStrength));
 
-                // Use the normal map to slightly distort the 'up' direction
                 up = normalize(up + normalTex * _NormalStrength * 0.5);
 
-                // Convert dot product to [0,1]
                 float height = saturate((dot(forward, up) * 0.5) + 0.5);
 
                 // Smooth horizon transition
@@ -89,7 +90,12 @@
                                          height);
 
                 // Blend between top and bottom colors
-                float3 skyColor = lerp((_BaseColor * _DayNightCycle) + ((_BaseColorNight * (1 - _DayNightCycle))), (_HorizonColor * _DayNightCycle) + (_HorizonColorNight * (1 - _DayNightCycle)), blend);
+                float3 dayColor = lerp(_BaseColor, _HorizonColor, blend);
+                float3 nightColor = lerp(_BaseColorNight, _HorizonColorNight, blend);
+                float3 skyColor = lerp(nightColor, dayColor, _DayNightCycle);
+
+                // --- POSTERIZATION / COLOR BANDING ---
+                skyColor = floor(skyColor * _ColorBandingSteps) / _ColorBandingSteps;
 
                 return float4(skyColor, _Bloom);
             }
