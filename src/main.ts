@@ -104,6 +104,7 @@ async function doMap(file: rm.DIFFICULTY_NAME, chromaOnly: boolean = false) {
         "PlayersPlace",
         "Smoke",
         "Clouds",
+        "Mountains"
     ], "Contains")
 
     if(!chromaOnly) {
@@ -216,6 +217,31 @@ async function doMap(file: rm.DIFFICULTY_NAME, chromaOnly: boolean = false) {
 
     setLaserPositions("left");
     setLaserPositions("right");
+
+    // Assign all notes to a track
+    if(!chromaOnly) map.allNotes.forEach(note => {
+        note.track.add("allNotes")
+    })
+
+    // Apply custom note prefab to all notes
+    if(!chromaOnly) rm.assignObjectPrefab(map, {
+        colorNotes: {
+            track: "allNotes",
+            asset: prefabs.customnote.path,
+            debrisAsset: prefabs.customnotedebris.path,
+            anyDirectionAsset: prefabs.customnotedot.path
+        },
+        chainHeads: {
+            track: "allNotes",
+            asset: prefabs.customchain.path,
+            debrisAsset: prefabs.customchaindebris.path
+        },
+        chainLinks: {
+            track: "allNotes",
+            asset: prefabs.customchainlink.path,
+            debrisAsset: prefabs.customchainlinkdebris.path
+        }
+    })
 }
 
 await Promise.all([
