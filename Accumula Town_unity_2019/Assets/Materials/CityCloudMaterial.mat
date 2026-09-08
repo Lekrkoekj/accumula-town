@@ -62,6 +62,7 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _ColorBands: 5
+    - _ColorLevels: 4
     - _Cutoff: 0.5
     - _CutoffThreshold: 0.1
     - _DetailNormalMapScale: 1
@@ -71,10 +72,12 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _GridResolution: 15.57
+    - _HeightNoiseOffset: 0.5
     - _HeightNoiseOffsetScale: 1
     - _HeightSpeedDamping: 0.05
+    - _HeightSpeedFalloff: 0.01
     - _MaskPixelResolution: 32
-    - _MaskStrength: 2.14
+    - _MaskStrength: 4.83
     - _Metallic: 0
     - _Mode: 0
     - _MovementSpeed: 1
@@ -82,7 +85,7 @@ Material:
     - _Opacity: 1
     - _Parallax: 0.02
     - _PixelDensity: 3.6
-    - _PixelSize: 0.23
+    - _PixelSize: 2
     - _PixelWorldSize: 0.25
     - _PixelateMask: 1
     - _PosterizeSteps: 4

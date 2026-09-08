@@ -1,4 +1,4 @@
-Shader "Custom/CloudShader"
+﻿Shader "Custom/CloudShaderRetro"
 {
     Properties
     {
@@ -8,12 +8,13 @@ Shader "Custom/CloudShader"
         _Mask("Mask", 2D) = "white" {}
         _MaskStrength("Mask Strength", float) = 3.94
 
-        [Header(Retro Pixelation)]
-        _GridResolution("Pixel Grid Density", float) = 64.0
-        _ColorBands("Color Posterization Steps (0 = Off)", float) = 4.0
+        // --- Retro controls ---
+        _PixelSize("Pixel Size (world units)", float) = 8
+        _ColorLevels("Color Levels (posterize steps, 0 = off)", float) = 5
 
-        [Header(Height Adjustments)]
-        _HeightSpeedDamping("Height Speed Damping", float) = 0.05
+        // --- Height-based controls (now per-OBJECT, not per-fragment) ---
+        _HeightSpeedFalloff("Height Speed Falloff", float) = 0.01
+        _HeightNoiseOffset("Height Noise Offset", float) = 0.5
     }
     SubShader
     {
@@ -44,7 +45,6 @@ Shader "Custom/CloudShader"
                 float4 vertex : SV_POSITION;
                 float3 worldPosition : TEXCOORD0;
                 float2 uv : TEXCOORD1;
-                float objectHeight : TEXCOORD2;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -54,21 +54,13 @@ Shader "Custom/CloudShader"
 
             sampler2D _Mask;
             float4 _Mask_ST;
-            float4 _Mask_TexelSize;
             float _MaskStrength;
 
-            float _GridResolution;
-            float _ColorBands;
+            float _PixelSize;
+            float _ColorLevels;
 
-            float _HeightSpeedDamping;
-
-            // Pseudo-random hash: maps a 1D scalar to a 2D random offset in range [0, 1000]
-            float2 hash21(float p)
-            {
-                float3 p3 = frac(p * float3(0.1031, 0.1030, 0.0973));
-                p3 += dot(p3, p3.yzx + 33.33);
-                return frac((p3.xx + p3.yz) * p3.zy) * 1000.0;
-            }
+            float _HeightSpeedFalloff;
+            float _HeightNoiseOffset;
 
             v2f vert (appdata v)
             {
@@ -79,44 +71,60 @@ Shader "Custom/CloudShader"
 
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.worldPosition = localToWorld(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _Mask);
 
-                // Sample GameObject's origin Y in world space
-                o.objectHeight = unity_ObjectToWorld[1].w;
+                o.uv = TRANSFORM_TEX(v.uv, _Mask);
 
                 return o;
             }
 
+            // Simple pseudo-random hash: turns a single float into a
+            // "jumpy" pseudo-random value with no relation to nearby inputs.
+            float hash1(float n)
+            {
+                return frac(sin(n) * 43758.5453123);
+            }
+
             fixed4 frag (v2f i) : SV_Target
             {
-                // Height-based speed scaling: higher in world space moves slower
-                float height = i.objectHeight;
-                float effectiveSpeed = _MovementSpeed / (1.0 + max(0.0, height * _HeightSpeedDamping));
+                // Object's world-space position (constant for the whole object,
+                // NOT per-fragment) - avoids the dome-curvature ring/warp issue.
+                float objectHeight = unity_ObjectToWorld._m13; // world-space Y of pivot
 
-                // Completely pseudo-random 2D coordinate offset seeded by height
-                float2 randomNoiseOffset = hash21(height);
+                // Higher objects move slower.
+                float speedMultiplier = 1.0 / (1.0 + max(objectHeight, 0) * _HeightSpeedFalloff);
 
-                // 1. Calculate full-scale noise domain coordinates
-                float2 noiseDomain = (i.worldPosition.xz + randomNoiseOffset + (_Time.y * effectiveSpeed)) * _TextureSize;
+                // Animate in world space, using the per-fragment XZ (fine - that part
+                // isn't height-dependent) but the object-wide speed multiplier.
+                float2 animatedPos = i.worldPosition.xz + _Time.y * _MovementSpeed * speedMultiplier;
 
-                // 2. Snap directly inside noise coordinate space
-                float gridRes = max(_GridResolution, 1.0);
-                float2 snappedNoiseCoord = (floor(noiseDomain * gridRes) + 0.5) / gridRes;
+                // Pseudo-random 2D offset derived from the object's height.
+                // Two different hash seeds for X and Y so the offset isn't a
+                // straight diagonal, and small height changes produce
+                // unrelated/uncorrelated offsets rather than a smooth slide.
+                float2 randomOffset = float2(
+                    hash1(objectHeight * 12.9898),
+                    hash1(objectHeight * 78.233)
+                ) * _HeightNoiseOffset * 100.0; // scaled up so it meaningfully shifts the noise field
 
-                // 3. Sample procedural noise
-                float cloud = pow(simplex(snappedNoiseCoord), _Strength);
+                animatedPos += randomOffset;
 
-                // 4. Sample mask
-                float mask = tex2Dlod(_Mask, float4(i.uv, 0.0, 0.0)).r;
+                // --- Pixelation step ---
+                float2 pixelatedPos = floor(animatedPos / _PixelSize) * _PixelSize;
 
-                // 5. Apply mask
-                cloud *= pow(mask, _MaskStrength);
+                float cloud = pow(
+                    simplex(pixelatedPos * _TextureSize),
+                    _Strength
+                );
 
-                // 6. Palette posterization
-                if (_ColorBands > 1.0)
+                // --- Optional posterize step for extra retro "limited palette" look ---
+                if (_ColorLevels > 0)
                 {
-                    cloud = floor(cloud * _ColorBands) / _ColorBands;
+                    cloud = round(cloud * _ColorLevels) / _ColorLevels;
                 }
+
+                // Mask (unchanged)
+                float mask = tex2D(_Mask, i.uv).r;
+                cloud *= pow(mask, _MaskStrength);
 
                 return fixed4(cloud, cloud, cloud, 0.0);
             }
