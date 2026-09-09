@@ -12,8 +12,6 @@
         _PixelSize("Pixel Size (world units)", float) = 8
         _ColorLevels("Color Levels (posterize steps, 0 = off)", float) = 5
 
-        // --- Height-based controls (now per-OBJECT, not per-fragment) ---
-        _HeightSpeedFalloff("Height Speed Falloff", float) = 0.01
         _HeightNoiseOffset("Height Noise Offset", float) = 0.5
     }
     SubShader
@@ -59,7 +57,6 @@
             float _PixelSize;
             float _ColorLevels;
 
-            float _HeightSpeedFalloff;
             float _HeightNoiseOffset;
 
             v2f vert (appdata v)
@@ -77,8 +74,6 @@
                 return o;
             }
 
-            // Simple pseudo-random hash: turns a single float into a
-            // "jumpy" pseudo-random value with no relation to nearby inputs.
             float hash1(float n)
             {
                 return frac(sin(n) * 43758.5453123);
@@ -86,29 +81,20 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // Object's world-space position (constant for the whole object,
-                // NOT per-fragment) - avoids the dome-curvature ring/warp issue.
-                float objectHeight = unity_ObjectToWorld._m13; // world-space Y of pivot
+                // Get object world space Y position
+                float objectHeight = unity_ObjectToWorld._m13;
 
-                // Higher objects move slower.
-                float speedMultiplier = 1.0 / (1.0 + max(objectHeight, 0) * _HeightSpeedFalloff);
+                float2 animatedPos = i.worldPosition.xz + _Time.y * _MovementSpeed;
 
-                // Animate in world space, using the per-fragment XZ (fine - that part
-                // isn't height-dependent) but the object-wide speed multiplier.
-                float2 animatedPos = i.worldPosition.xz + _Time.y * _MovementSpeed * speedMultiplier;
-
-                // Pseudo-random 2D offset derived from the object's height.
-                // Two different hash seeds for X and Y so the offset isn't a
-                // straight diagonal, and small height changes produce
-                // unrelated/uncorrelated offsets rather than a smooth slide.
+                // Randomize noise offset
                 float2 randomOffset = float2(
                     hash1(objectHeight * 12.9898),
                     hash1(objectHeight * 78.233)
-                ) * _HeightNoiseOffset * 100.0; // scaled up so it meaningfully shifts the noise field
+                ) * _HeightNoiseOffset * 100.0;
 
                 animatedPos += randomOffset;
 
-                // --- Pixelation step ---
+                // Pixelate
                 float2 pixelatedPos = floor(animatedPos / _PixelSize) * _PixelSize;
 
                 float cloud = pow(
@@ -116,13 +102,13 @@
                     _Strength
                 );
 
-                // --- Optional posterize step for extra retro "limited palette" look ---
+                // Limit the amount of colors used to make it look more retro
                 if (_ColorLevels > 0)
                 {
                     cloud = round(cloud * _ColorLevels) / _ColorLevels;
                 }
 
-                // Mask (unchanged)
+                // Mask
                 float mask = tex2D(_Mask, i.uv).r;
                 cloud *= pow(mask, _MaskStrength);
 
